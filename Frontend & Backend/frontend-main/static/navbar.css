@@ -1,0 +1,61 @@
+/* navbar.css */
+
+/* Apply flexbox to the navigation container */
+nav {
+    display: flex;
+    justify-content: space-between; /* Distribute items evenly */
+    align-items: center; /* Vertically centers the items */
+    background-color: #333;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+/* Flexbox layout for the navigation links */
+.nav-links {
+    display: flex;
+    justify-content: space-between; /* Evenly space out the links */
+    width: 80%; /* 80% of the space is for the first 3 links */
+}
+
+.nav-links a {
+    flex: 1; /* Make each link take equal space */
+    text-align: center; /* Center the text */
+    color: white;
+    text-decoration: none;
+    padding: 10px 0;
+    box-sizing: border-box; /* Prevent padding from affecting the width */
+    transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: #575757;
+    border-radius: 5px;
+}
+
+/* Styling for the logout button */
+.logout {
+    flex: 1; /* Ensure the logout button takes the same width as others */
+    background-color: #e74c3c;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.logout:hover {
+    background-color: #c0392b;
+}
+
+/* Make sure the logout button is aligned to the right */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 50px; /* Padding to add space around buttons */
+}
+
+.spacer {
+    flex-grow: 1;
+ }

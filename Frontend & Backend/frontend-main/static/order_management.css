@@ -1,0 +1,175 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #F0FBFF;
+    color: #023047;
+    font-size: 16px;
+    padding: 20px;
+}
+
+/* Navigation bar styling */
+nav {
+    background-color: #219EBC;
+    padding: 10px;
+    text-align: center;
+    /* Use flexbox to make it responsive */
+    display: flex;
+    justify-content: center; /* Center the links */
+    flex-wrap: wrap; /* Allow links to wrap to the next line if necessary */
+}
+
+nav a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin: 5px; /* Reduced margin for better responsiveness */
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    flex: 1; /* Allow links to grow and shrink */
+    min-width: 120px; /* Set a minimum width for the links */
+    text-align: center; /* Center text within the link */
+}
+
+nav a:hover {
+    background-color: #FFB703; /* Highlight color */
+}
+
+/* Main container styling */
+.management-container {
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1200px; /* Set max-width to your preference */
+    margin: 0 auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+    color: #219EBC;
+    margin-bottom: 10px;
+}
+
+/* Button styling */
+button {
+    background-color: #FB8500;
+    color: #FFFFFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #FFB703;
+}
+
+/* Consistent button styles */
+.sort-button {
+    padding: 10px 15px;
+    margin: 5px;
+}
+
+/* Orders Table styling */
+#ordersTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #DDE3E7; /* Added border to the table */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+#ordersTable th, #ordersTable td {
+    padding: 12px;
+    border: 1px solid #DDE3E7;
+    text-align: center;
+    width: auto; /* Adjust width */
+}
+
+#ordersTable th {
+    background-color: #219EBC;
+    color: #FFFFFF;
+}
+
+#ordersTable tr:nth-child(even) {
+    background-color: #F9FBFD;
+}
+
+#ordersTable tr:hover {
+    background-color: #FFB703;
+}
+
+/* Adjust columns to prevent overcrowding */
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+}
+
+/* Optional: Add some styling to the parent container if needed */
+.table-container {
+    padding: 0; /* Ensure no padding */
+    margin: 0; /* Ensure no margin */
+}
+
+/* Card styling for table container */
+.card {
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #fff;
+}
+
+.container {
+    margin-top: 20px; 
+}
+
+
+h2 {
+    margin-top: 40px; 
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column; 
+    gap: 4px; 
+}
+
+.button-container button {
+    width: 100%; 
+    padding: 10px; 
+    text-align: center; 
+    box-sizing: border-box; 
+    background-color: #525252;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.delete-button-container button {
+    width: 100%; 
+    padding: 10px; 
+    text-align: center; 
+    box-sizing: border-box; 
+    background-color: #ad0202;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+
+.button-container button:hover {
+    background-color: #575757;
+}
+
+.button-container button[style*="display:none"] {
+    display: none;
+}

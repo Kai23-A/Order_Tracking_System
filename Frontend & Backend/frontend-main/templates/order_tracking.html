@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Order Tracking</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='order_tracking.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+</head>
+<body>
+  
+   {% include 'navbar.html' %}
+
+   <!-- Tracking Container -->
+   <div class="tracking-container">
+      <h2>Order Tracking</h2>
+
+      <!-- Notification Area -->
+      <div id="orderNotifications" class="notification"></div>
+
+      <!-- Tracking Table -->
+      <table id="trackingTable">
+         <thead>
+            <tr>
+               <th>Order ID</th>
+               <th>Delicacy</th>
+               <th>Status</th>
+               <th>Notification</th>
+            </tr>
+         </thead>
+         <tbody>
+            <!-- Tracking data will populate here -->
+         </tbody>
+      </table>
+   </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Order History</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='order_history.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+</head>
+<body>
+   
+   {% include 'navbar.html' %}
+
+   <table id="historyTable">
+      <thead>
+         <tr>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Contact Number</th>
+            <th>Address</th>
+            <th>Pickup Place</th>
+            <th>Pickup Date</th>
+            <th>Delicacy</th>
+            <th>Quantity</th>
+            <th>Container</th>
+            <th>Special Request</th>
+            <th>Status</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for order in orders %}
+            <tr>
+               <td>{{ order.id }}</td>
+               <td>{{ order.buyer.name }}</td>
+               <td>{{ order.buyer.contact_number }}</td>
+               <td>{{ order.buyer.address }}</td>
+               <td>{{ order.pickup_place }}</td>
+               <td>{{ order.pickup_date.strftime('%Y-%m-%d') }}</td>
+               <td>{{ order.delicacy.value }}</td> <!-- Corrected to use order.delicacy -->
+               <td>{{ order.quantity }}</td>
+               <td>{{ order.container_size.value }}</td> <!-- Corrected to use order.container_size -->
+               <td>{{ order.special_request }}</td>
+               <td>{{ order.status.value }}</td> <!-- Show the status, including 'REMOVED' -->
+            </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</body>
+</html>

@@ -1,0 +1,127 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #F0FBFF;
+    color: #023047;
+    font-size: 16px;
+    padding: 20px;
+}
+
+/* Navigation bar styling */
+nav {
+    background-color: #219EBC;
+    padding: 10px;
+    text-align: center;
+    /* Use flexbox to make it responsive */
+    display: flex;
+    justify-content: center; /* Center the links */
+    flex-wrap: wrap; /* Allow links to wrap to the next line if necessary */
+}
+
+nav a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin: 5px; /* Reduced margin for better responsiveness */
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    flex: 1; /* Allow links to grow and shrink */
+    min-width: 120px; /* Set a minimum width for the links */
+    text-align: center; /* Center text within the link */
+}
+
+nav a:hover {
+    background-color: #FFB703; /* Highlight color */
+}
+
+/* Main container styling */
+.order-container {
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 90%; /* Adjusted to 90% of the viewport width */
+    margin: 20px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Headings */
+h2, h3 {
+    color: #219EBC;
+    margin-bottom: 10px;
+}
+
+/* Form styling */
+form label {
+    display: block;
+    color: #023047;
+    margin: 10px 0 5px;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #DDE3E7;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+form input:focus, form select:focus {
+    border-color: #219EBC;
+}
+
+/* Align Quantity and Container fields side by side */
+.quantity-container {
+    display: flex;
+    gap: 15px;
+}
+
+.quantity-container div {
+    flex: 1;
+}
+
+button[type="submit"], button[type="button"] {
+    background-color: #FB8500;
+    color: #FFFFFF;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover, button[type="button"]:hover {
+    background-color: #FFB703;
+}
+
+/* Order Summary */
+#orderSummary {
+    margin-top: 20px;
+    background-color: #E8F4F8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#orderSummary ul {
+    list-style: none;
+    padding: 0;
+}
+
+#orderSummary ul li {
+    padding: 8px;
+    background-color: #F9FBFD;
+    border: 1px solid #DDE3E7;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    color: #023047;
+}

@@ -1,0 +1,35 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #E0F7FA; /* Lightened Sky Blue background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    color: #023047;
+}
+
+.welcome-container {
+    background-color: #E0F7FA;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #219EBC;
+}
+
+p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #023047;
+}
+

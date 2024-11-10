@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #e3f2fd;
+}
+
+.login-container {
+    background: #fff;
+    padding: 3rem; /* Increased padding for a larger box */
+    width: 400px; /* Set a fixed width for the login box */
+    max-width: 90%; /* Ensure it doesn't exceed 90% of the viewport width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-radius: 8px; /* Optional: rounded corners */
+}
+
+label, input, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+input {
+    padding: 0.5rem; /* Added padding for input fields */
+    border: 1px solid #ccc; /* Added border for input fields */
+    border-radius: 4px; /* Rounded corners for input fields */
+}
+
+button {
+    background-color: #219ebc;
+    color: white;
+    padding: 0.75rem; /* Increased padding for the button */
+    border: none;
+    border-radius: 4px; /* Rounded corners for the button */
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1a7a9c; /* Darker shade on hover for button */
+}

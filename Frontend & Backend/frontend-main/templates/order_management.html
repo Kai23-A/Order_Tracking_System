@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Order Management</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='order_management.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+   <script src="{{ url_for('static', filename='script/order_management.js') }}" defer></script>
+</head>
+<body>
+  
+    {% include 'navbar.html' %}
+
+    <div class="content">
+        <h2>Manage Orders</h2>
+    </div>
+
+     <!-- Sorting buttons -->
+     <button onclick="location.href='{{ url_for('order_management', sort_by='pickup_date') }}'">Sort by Pickup Date</button>
+     <button onclick="location.href='{{ url_for('order_management', sort_by='delicacy') }}'">Sort by Delicacy</button>
+     <button onclick="location.href='{{ url_for('order_management', sort_by='status') }}'">Sort by Status</button>
+
+      <table id="ordersTable">
+         <thead>
+            <tr>
+               <th>Customer Name</th>
+               <th>Contact Number</th>
+               <th>Address</th>
+               <th>Pickup Place</th>
+               <th>Pickup Date</th>
+               <th>Delicacy</th>
+               <th>Quantity</th>
+               <th>Container</th>
+               <th>Special Request</th>
+               <th>Status</th>
+               <th>Actions</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for order in orders %}
+            <tr id="order_{{ order.id }}">
+               <td><span class="order_field" id="customer_name_{{ order.id }}">{{ order.buyer.name }}</span>
+                   <input type="text" id="input_customer_name_{{ order.id }}" value="{{ order.buyer.name }}" style="display:none;"></td>
+               <td><span class="order_field" id="contact_number_{{ order.id }}">{{ order.buyer.contact_number }}</span>
+                   <input type="text" id="input_contact_number_{{ order.id }}" value="{{ order.buyer.contact_number }}" style="display:none;"></td>
+               <td><span class="order_field" id="address_{{ order.id }}">{{ order.buyer.address }}</span>
+                   <input type="text" id="input_address_{{ order.id }}" value="{{ order.buyer.address }}" style="display:none;"></td>
+               <td><span class="order_field" id="pickup_place_{{ order.id }}">{{ order.pickup_place }}</span>
+                   <input type="text" id="input_pickup_place_{{ order.id }}" value="{{ order.pickup_place }}" style="display:none;"></td>
+               <td><span class="order_field" id="pickup_date_{{ order.id }}">{{ order.pickup_date.strftime('%Y-%m-%d') }}</span>
+                   <input type="date" id="input_pickup_date_{{ order.id }}" value="{{ order.pickup_date.strftime('%Y-%m-%d') }}" style="display:none;"></td>
+               <td><span class="order_field" id="delicacy_{{ order.id }}">{{ order.delicacy.name }}</span>
+                   <input type="text" id="input_delicacy_{{ order.id }}" value="{{ order.delicacy.name }}" style="display:none;"></td>
+               <td><span class="order_field" id="quantity_{{ order.id }}">{{ order.quantity }}</span>
+                   <input type="number" id="input_quantity_{{ order.id }}" value="{{ order.quantity }}" style="display:none;"></td>
+               <td><span class="order_field" id="container_{{ order.id }}">{{ order.container_size.value }}</span>
+                   <input type="text" id="input_container_{{ order.id }}" value="{{ order.container_size.value }}" style="display:none;"></td>
+               <td><span class="order_field" id="special_request_{{ order.id }}">{{ order.special_request }}</span>
+                   <input type="text" id="input_special_request_{{ order.id }}" value="{{ order.special_request }}" style="display:none;"></td>
+               <td><span class="order_field" id="status_{{ order.id }}">{{ order.status }}</span>
+                   <select id="input_status_{{ order.id }}" style="display:none;">
+                       <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                       <option value="in-progress" {% if order.status == 'in-progress' %}selected{% endif %}>In-progress</option>
+                       <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
+                   </select></td>
+              
+
+                   <td>
+                    <div class="button-container">
+                        <button id="change_button_{{ order.id }}" onclick="editOrder({{ order.id }})">Change</button>
+                        <button id="save_button_{{ order.id }}" onclick="saveOrder({{ order.id }})" style="display:none;">Save</button>
+                        <button id="cancel_button_{{ order.id }}" onclick="cancelEdit({{ order.id }})" style="display:none;">Cancel</button>
+                        <button id="delete_button_{{ order.id }}" onclick="deleteOrder({{ order.id }})">Delete</button>
+                    </div>
+                 </td>
+                 
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+</body>
+</html>

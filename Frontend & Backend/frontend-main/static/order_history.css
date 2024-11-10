@@ -1,0 +1,99 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #F0FBFF; /* Softened light background */
+    color: #023047;
+    font-size: 16px;
+    padding: 20px;
+}
+
+/* Navigation bar styling */
+nav {
+    background-color: #219EBC;
+    padding: 10px;
+    text-align: center;
+    /* Use flexbox to make it responsive */
+    display: flex;
+    justify-content: center; /* Center the links */
+    flex-wrap: wrap; /* Allow links to wrap to the next line if necessary */
+}
+
+nav a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin: 5px; /* Reduced margin for better responsiveness */
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    flex: 1; /* Allow links to grow and shrink */
+    min-width: 120px; /* Set a minimum width for the links */
+    text-align: center; /* Center text within the link */
+}
+
+nav a:hover {
+    background-color: #FFB703; /* Highlight color */
+}
+
+/* Main container styling */
+.history-container {
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 90%; /* Adjusted to 90% of the viewport width */
+    margin: 20px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+    color: #219EBC;
+    margin-bottom: 10px;
+}
+
+/* Button styling */
+button {
+    background-color: #FB8500;
+    color: #FFFFFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #FFB703;
+}
+
+/* History Table styling */
+#historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#historyTable th, #historyTable td {
+    padding: 12px;
+    border: 1px solid #DDE3E7;
+    text-align: center;
+}
+
+#historyTable th {
+    background-color: #219EBC;
+    color: #FFFFFF;
+}
+
+#historyTable tr:nth-child(even) {
+    background-color: #F9FBFD;
+}
+
+#historyTable tr:hover {
+    background-color: #FFB703;
+}
