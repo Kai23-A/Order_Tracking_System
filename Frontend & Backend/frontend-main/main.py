@@ -115,11 +115,6 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        # Validate password length and complexity
-        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'\d', password):
-            flash("Password must be at least 8 characters long and contain a mix of uppercase, lowercase, and numbers.")
-            return redirect(url_for('login'))
-
         # Retrieve the first (and only) user from the database
         user = User.query.first()
 
