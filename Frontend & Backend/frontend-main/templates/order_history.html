@@ -36,11 +36,11 @@
                <td>{{ order.buyer.address }}</td>
                <td>{{ order.pickup_place }}</td>
                <td>{{ order.pickup_date.strftime('%Y-%m-%d') }}</td>
-               <td>{{ order.delicacy.value }}</td> <!-- Corrected to use order.delicacy -->
+               <td>{{ order.delicacy.value }}</td>
                <td>{{ order.quantity }}</td>
-               <td>{{ order.container_size.value }}</td> <!-- Corrected to use order.container_size -->
+               <td>{{ order.container_size.value }}</td> 
                <td>{{ order.special_request }}</td>
-               <td>{{ order.status.value }}</td> <!-- Show the status, including 'REMOVED' -->
+               <td>{{ order.status.value }}</td> 
             </tr>
          {% endfor %}
       </tbody>
