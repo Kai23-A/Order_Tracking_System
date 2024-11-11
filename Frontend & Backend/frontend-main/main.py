@@ -15,9 +15,10 @@ app = Flask(__name__)
 # Set configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.urandom(24)
+app.secret_key = os.urandom(24) 
 
-app.permanent_session_lifetime = timedelta(minutes=30)
+app.permanent_session_lifetime = timedelta(minutes=30)  
+
 
 # Initialize extensions
 db = SQLAlchemy(app)
@@ -110,7 +111,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-   
+    
         username = request.form['username']
         password = request.form['password']
 
@@ -136,7 +137,7 @@ def order_form():
         pickup_place = request.form.get('pickupPlace')
         pickup_date = datetime.strptime(request.form.get('pickupDate'), "%Y-%m-%d")
         delicacy_display = request.form.get('delicacy')
-        quantity = int(request.form.get('quantity', 1))
+        quantity = int(request.form.get('quantity', 1)) 
         container_size = request.form.get('container')
         special_request = request.form.get('specialRequest', '')
 
@@ -146,7 +147,7 @@ def order_form():
             return redirect(url_for('order_form'))
 
         # Validate quantity based on the delicacies
-        if quantity < 1 or quantity > 10: 
+        if quantity < 1 or quantity > 10:  
             flash("Quantity must be between 1 and 10.")
             return redirect(url_for('order_form'))
 
@@ -186,7 +187,7 @@ def order_form():
 
         # Create and add new order directly to the database
         new_order = Order(
-            user_id=User.query.first().id,
+            user_id=User.query.first().id, 
             buyer_id=buyer.id,
             delicacy=delicacy_display,
             quantity=quantity,
@@ -208,10 +209,19 @@ def order_form():
             print(f"Error committing to the database: {e}")
             flash("Error submitting the order. Please try again.", 'error')
 
-        return redirect(url_for('order_form')) 
+        return redirect(url_for('order_form'))  
 
     return render_template('order_form.html')
 
+
+# Radix Sort by Date
+def radix_sort_by_date(orders):
+    def get_date_key(order):
+        # Return a tuple of (year, month, day) as a numeric key for sorting
+        return (order.pickup_date.year, order.pickup_date.month, order.pickup_date.day)
+   
+    # Apply Radix Sort (sorting by year, then month, then day)
+    return radix_sort_orders(orders, get_date_key)
 
 # Radix Sort by Date
 def radix_sort_by_date(orders):
@@ -227,7 +237,7 @@ def radix_sort_orders(orders, key_func):
     # Convert each key returned by the key_func to a string for sorting
     def get_digit(key, exp):
         # Convert each part of the key (tuple) into a string
-        key_str = ''.join(str(i).zfill(4) for i in key)
+        key_str = ''.join(str(i).zfill(4) for i in key) 
         return int(key_str[-(exp + 1)]) if len(key_str) > exp else 0
 
     # Find the maximum number of digits in the keys
@@ -240,32 +250,182 @@ def radix_sort_orders(orders, key_func):
             digit = get_digit(key, exp)
             buckets[digit].append(order)
 
-        # Rebuild the orders list by concatenating all buckets
         orders = [order for bucket in buckets for order in bucket]
 
     return orders
 
-@app.route('/order_history')
-def order_history():
-    orders = Order.query.all()
-    sorted_orders = radix_sort_by_date(orders)
-    return render_template('order_history.html', orders=sorted_orders)
+# Quick Sort by Delicacy
+def quick_sort_delicacy(orders):
+    def quick_sort(orders, low, high):
+        if low < high:
+            pi = partition(orders, low, high)
+            quick_sort(orders, low, pi - 1)
+            quick_sort(orders, pi + 1, high)
 
+    def partition(orders, low, high):
+        pivot = orders[high].delicacy.name
+        i = low - 1
+        for j in range(low, high):
+            if orders[j].delicacy.name <= pivot:
+                i += 1
+                orders[i], orders[j] = orders[j], orders[i]
+        orders[i + 1], orders[high] = orders[high], orders[i + 1]
+        return i + 1
+
+    quick_sort(orders, 0, len(orders) - 1)
+    return orders
+
+# Cycle Sort by Status
+def cycle_sort_status(orders):
+    def cycle_sort(orders):
+        n = len(orders)
+        for cycle_start in range(n - 1):
+            item = orders[cycle_start]
+            pos = cycle_start
+
+            for i in range(cycle_start + 1, n):
+                if orders[i].status.name < item.status.name:
+                    pos += 1
+
+            if pos == cycle_start:
+                continue
+
+            while item.status.name == orders[pos].status.name:
+                pos += 1
+
+            orders[pos], item = item, orders[pos]
+
+            while pos != cycle_start:
+                pos = cycle_start
+                for i in range(cycle_start + 1, n):
+                    if orders[i].status.name < item.status.name:
+                        pos += 1
+
+                while item.status.name == orders[pos].status.name:
+                    pos += 1
+
+                orders[pos], item = item, orders[pos]
+
+        return orders
+
+    return cycle_sort(orders)
+
+# Flask route for order management with sorting
 @app.route('/order_management')
 def order_management():
-    orders = Order.query.all()
+    sort_by = request.args.get('sort_by', default='pickup_date', type=str)
+    sort_algorithm = request.args.get('sort_algorithm', default='radix', type=str)
+   
+    # Validate the 'sort_by' and 'sort_algorithm' parameters to ensure they are valid
+    valid_sort_fields = ['pickup_date', 'delicacy', 'status']
+    valid_sort_algorithms = ['radix', 'quick', 'cycle'] 
+
+    if sort_by not in valid_sort_fields:
+        return "Invalid sort option!", 400  
+
+    if sort_algorithm not in valid_sort_algorithms:
+        return "Invalid sort algorithm!", 400  
+   
+    # Assuming you have a method to fetch all orders
+    orders = Order.query.filter(Order.status != OrderStatus.REMOVED).all()  
+
+    # Apply the selected sorting algorithm
+    if sort_algorithm == 'radix':
+        if sort_by == 'pickup_date':
+            orders = radix_sort_by_date(orders)  
+
+    elif sort_algorithm == 'quick':
+        if sort_by == 'delicacy':
+            orders = quick_sort_delicacy(orders)
+
+    elif sort_algorithm == 'cycle':
+        if sort_by == 'status':
+            orders = cycle_sort_status(orders)
+
     return render_template('order_management.html', orders=orders)
 
-@app.route('/order_tracking/<int:order_id>', methods=['GET', 'POST'])
-def order_tracking(order_id):
+@app.route('/remove_order/<int:order_id>', methods=['POST'])
+def remove_order(order_id):
     order = Order.query.get_or_404(order_id)
-    if request.method == 'POST':
-        # Update the order status (Example: Completed)
-        order.status = OrderStatus.COMPLETED
+    order.status = OrderStatus.REMOVED  
+    db.session.commit()
+
+    return jsonify({"success": True})  
+
+# Flask route for updating order
+@app.route('/update_order/<int:orderId>', methods=['POST'])
+def update_order(orderId):
+    data = request.json  # Receive the JSON data
+    order = Order.query.get(orderId)  # Get the order by ID
+
+    if not order:
+        return jsonify(success=False, message="Order not found")
+
+    try:
+        # Update each field with the received data, handling enums and date parsing
+        if 'customer_name' in data:
+            order.buyer.name = data['customer_name']
+        if 'contact_number' in data:
+            order.buyer.contact_number = data['contact_number']
+        if 'address' in data:
+            order.buyer.address = data['address']
+        if 'pickup_place' in data:
+            order.pickup_place = data['pickup_place']
+        if 'pickup_date' in data:
+            order.pickup_date = datetime.strptime(data['pickup_date'], "%Y-%m-%d")
+        
+        # Update delicacy enum
+        if 'delicacy' in data:
+            try:
+                order.delicacy = DelicacyType[data['delicacy'].upper().replace("-", "_")]
+            except KeyError:
+                return jsonify(success=False, message="Invalid delicacy type")
+        
+        # Update container size enum
+        if 'container' in data:
+            try:
+                order.container_size = ContainerSize[data['container'].upper().replace("-", "_")]
+            except KeyError:
+                return jsonify(success=False, message="Invalid container size")
+        
+        # Update quantity and special request
+        if 'quantity' in data:
+            order.quantity = int(data['quantity'])
+        if 'special_request' in data:
+            order.special_request = data['special_request']
+        
+        # Update status enum
+        if 'status' in data:
+            try:
+                order.status = OrderStatus[data['status'].upper().replace(" ", "_")]
+            except KeyError:
+                return jsonify(success=False, message="Invalid order status")
+
+        # Commit changes to the database
         db.session.commit()
-        flash("Order status updated successfully!")
-        return redirect(url_for('order_management'))
-    return render_template('order_tracking.html', order=order)
+        return jsonify(success=True, order=data)
+    except Exception as e:
+        db.session.rollback()  # Rollback on any error
+        print(f"Error updating order: {e}")
+        return jsonify(success=False, message="An error occurred while updating the order")
+
+
+@app.route('/delete_order/<int:order_id>', methods=['DELETE'])
+def delete_order(order_id):
+    order = Order.query.get_or_404(order_id)
+    db.session.delete(order)
+    db.session.commit()
+    return '', 204  
+
+@app.route('/order_history')
+def order_history():
+    # Fetch all orders including the removed ones
+    orders = Order.query.all()  
+    return render_template('order_history.html', orders=orders)
+
+@app.route('/order_tracking')
+def order_tracking():
+    return render_template('order_tracking.html')
 
 if __name__ == '__main__':
     app.run(debug=True) 
