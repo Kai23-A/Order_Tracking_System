@@ -1,4 +1,3 @@
-/* Reset styles */
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +6,7 @@
 }
 
 body {
-    background-color: #F0FBFF; /* Softened light background */
+    background-color: #F0FBFF; 
     color: #023047;
     font-size: 16px;
     padding: 20px;
@@ -18,26 +17,26 @@ nav {
     background-color: #219EBC;
     padding: 10px;
     text-align: center;
-    /* Use flexbox to make it responsive */
+  
     display: flex;
-    justify-content: center; /* Center the links */
-    flex-wrap: wrap; /* Allow links to wrap to the next line if necessary */
+    justify-content: center; 
+    flex-wrap: wrap; 
 }
 
 nav a {
     color: #FFFFFF;
     text-decoration: none;
-    margin: 5px; /* Reduced margin for better responsiveness */
+    margin: 5px; 
     padding: 10px 15px;
     border-radius: 8px;
     transition: background-color 0.3s ease;
-    flex: 1; /* Allow links to grow and shrink */
-    min-width: 120px; /* Set a minimum width for the links */
-    text-align: center; /* Center text within the link */
+    flex: 1; 
+    min-width: 120px;
+    text-align: center; 
 }
 
 nav a:hover {
-    background-color: #FFB703; /* Highlight color */
+    background-color: #FFB703; 
 }
 
 /* Main container styling */
@@ -45,7 +44,7 @@ nav a:hover {
     background-color: #FFFFFF;
     padding: 30px;
     border-radius: 12px;
-    max-width: 90%; /* Adjusted to 90% of the viewport width */
+    max-width: 90%;
     margin: 20px auto;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
