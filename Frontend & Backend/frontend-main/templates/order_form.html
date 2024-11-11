@@ -18,7 +18,8 @@
          <input type="text" id="customer_name" name="customer_name" required><br>
 
          <label for="contactNumber">Contact Number:</label>
-         <input type="text" id="contactNumber" name="contactNumber" required>
+         <!-- Added pattern to enforce 11-digit contact number -->
+         <input type="text" id="contactNumber" name="contactNumber" pattern="\d{11}" title="Contact number must be 11 digits" required>
 
          <label for="address">Address:</label>
          <input type="text" id="address" name="address" required>
@@ -50,6 +51,7 @@
 
          <div class="form-group">
             <label for="quantity">Quantity:</label>
+            <!-- Already set min="1" to restrict to a minimum of 1 -->
             <input type="number" id="quantity" name="quantity" min="1" required>
          </div>
 
@@ -64,7 +66,6 @@
                <option value="BILAO_18">18’ Bilao</option>
                <option value="TAB">Tab</option>
                <option value="SLICE">Slice</option>
-               
             </select>
          </div>
 
