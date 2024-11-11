@@ -7,6 +7,7 @@ from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from datetime import datetime
+import re
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -14,9 +15,9 @@ app = Flask(__name__)
 # Set configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.urandom(24)  # Secure secret key for session management and flash messages
+app.secret_key = os.urandom(24) 
 
-app.permanent_session_lifetime = timedelta(minutes=30)  # Set session timeout to 30 minutes
+app.permanent_session_lifetime = timedelta(minutes=30)  
 
 
 # Initialize extensions
@@ -96,7 +97,7 @@ def create_tables():
     # Check if a user exists, create one if not
     if not User.query.first():
         default_user = User(
-            username="admin", 
+            username="admin",
             password=bcrypt.generate_password_hash("password").decode('utf-8')
         )
         db.session.add(default_user)
@@ -110,16 +111,20 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Retrieve form data
+    
         username = request.form['username']
         password = request.form['password']
+
+        # Validate password length and complexity
+        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'\d', password):
+            flash("Password must be at least 8 characters long and contain a mix of uppercase, lowercase, and numbers.")
+            return redirect(url_for('login'))
 
         # Retrieve the first (and only) user from the database
         user = User.query.first()
 
         if user and bcrypt.check_password_hash(user.password, password) and user.username == username:
-            
-            return redirect(url_for('order_form'))  # Redirect to order form after login
+            return redirect(url_for('order_form'))  
         else:
             flash("Invalid username or password. Please try again.")
             return redirect(url_for('login'))
@@ -136,9 +141,19 @@ def order_form():
         pickup_place = request.form.get('pickupPlace')
         pickup_date = datetime.strptime(request.form.get('pickupDate'), "%Y-%m-%d")
         delicacy_display = request.form.get('delicacy')
-        quantity = int(request.form.get('quantity', 1))  # Default to 1 if missing
+        quantity = int(request.form.get('quantity', 1)) 
         container_size = request.form.get('container')
         special_request = request.form.get('specialRequest', '')
+
+        # Validate contact number (11 digits)
+        if not re.match(r'^\d{11}$', contact_number):
+            flash("Invalid contact number. It must be exactly 11 digits.")
+            return redirect(url_for('order_form'))
+
+        # Validate quantity based on the delicacies
+        if quantity < 1 or quantity > 10:  
+            flash("Quantity must be between 1 and 10.")
+            return redirect(url_for('order_form'))
 
         # Debugging: Print form data
         print(f"Form data before saving: {name}, {contact_number}, {address}, {pickup_place}, {pickup_date}, {delicacy_display}, {quantity}, {container_size}, {special_request}")
@@ -176,7 +191,7 @@ def order_form():
 
         # Create and add new order directly to the database
         new_order = Order(
-            user_id=User.query.first().id,  # Assuming there's only one user, or use session-based user ID
+            user_id=User.query.first().id, 
             buyer_id=buyer.id,
             delicacy=delicacy_display,
             quantity=quantity,
@@ -198,7 +213,7 @@ def order_form():
             print(f"Error committing to the database: {e}")
             flash("Error submitting the order. Please try again.", 'error')
 
-        return redirect(url_for('order_form'))  # Optionally redirect to the order form or other page
+        return redirect(url_for('order_form'))  
 
     return render_template('order_form.html')
 
@@ -208,7 +223,16 @@ def radix_sort_by_date(orders):
     def get_date_key(order):
         # Return a tuple of (year, month, day) as a numeric key for sorting
         return (order.pickup_date.year, order.pickup_date.month, order.pickup_date.day)
-    
+   
+    # Apply Radix Sort (sorting by year, then month, then day)
+    return radix_sort_orders(orders, get_date_key)
+
+# Radix Sort by Date
+def radix_sort_by_date(orders):
+    def get_date_key(order):
+        # Return a tuple of (year, month, day) as a numeric key for sorting
+        return (order.pickup_date.year, order.pickup_date.month, order.pickup_date.day)
+   
     # Apply Radix Sort (sorting by year, then month, then day)
     return radix_sort_orders(orders, get_date_key)
 
@@ -217,8 +241,7 @@ def radix_sort_orders(orders, key_func):
     # Convert each key returned by the key_func to a string for sorting
     def get_digit(key, exp):
         # Convert each part of the key (tuple) into a string
-        # We use `join` to handle tuples of numbers correctly
-        key_str = ''.join(str(i).zfill(4) for i in key)  # Pad numbers with leading zeros for uniform length
+        key_str = ''.join(str(i).zfill(4) for i in key) 
         return int(key_str[-(exp + 1)]) if len(key_str) > exp else 0
 
     # Find the maximum number of digits in the keys
@@ -296,24 +319,24 @@ def cycle_sort_status(orders):
 def order_management():
     sort_by = request.args.get('sort_by', default='pickup_date', type=str)
     sort_algorithm = request.args.get('sort_algorithm', default='radix', type=str)
-    
+   
     # Validate the 'sort_by' and 'sort_algorithm' parameters to ensure they are valid
     valid_sort_fields = ['pickup_date', 'delicacy', 'status']
-    valid_sort_algorithms = ['radix', 'quick', 'cycle']  # Update with valid sorting algorithms you want to support
+    valid_sort_algorithms = ['radix', 'quick', 'cycle'] 
 
     if sort_by not in valid_sort_fields:
-        return "Invalid sort option!", 400  # Return error if invalid option is passed
+        return "Invalid sort option!", 400  
 
     if sort_algorithm not in valid_sort_algorithms:
-        return "Invalid sort algorithm!", 400  # Return error if invalid sorting algorithm is passed
-    
+        return "Invalid sort algorithm!", 400  
+   
     # Assuming you have a method to fetch all orders
-    orders = Order.query.filter(Order.status != OrderStatus.REMOVED).all()  # Example: Exclude removed orders
+    orders = Order.query.filter(Order.status != OrderStatus.REMOVED).all()  
 
     # Apply the selected sorting algorithm
     if sort_algorithm == 'radix':
         if sort_by == 'pickup_date':
-            orders = radix_sort_by_date(orders)  # Call radix sort by date
+            orders = radix_sort_by_date(orders)  
 
     elif sort_algorithm == 'quick':
         if sort_by == 'delicacy':
@@ -328,15 +351,15 @@ def order_management():
 @app.route('/remove_order/<int:order_id>', methods=['POST'])
 def remove_order(order_id):
     order = Order.query.get_or_404(order_id)
-    order.status = OrderStatus.REMOVED  # Mark the order as removed, not actually deleting it
+    order.status = OrderStatus.REMOVED  
     db.session.commit()
 
-    return jsonify({"success": True})  # Return success response for AJAX
+    return jsonify({"success": True})  
 
 @app.route('/update_order/<int:orderId>', methods=['POST'])
 def update_order(orderId):
-    data = request.json  # Receive the JSON data
-    order = Order.query.get(orderId)  # Get the order by ID
+    data = request.json  
+    order = Order.query.get(orderId)  
 
     if order:
         # Update each field with the received data
@@ -350,7 +373,7 @@ def update_order(orderId):
         order.container_size = data['container']
         order.special_request = data['special_request']
         order.status = data['status']
-        
+       
         # Commit changes to the database
         db.session.commit()
         return jsonify(success=True, order=data)
@@ -362,13 +385,12 @@ def delete_order(order_id):
     order = Order.query.get_or_404(order_id)
     db.session.delete(order)
     db.session.commit()
-    return '', 204  # No content
+    return '', 204  
 
-#
 @app.route('/order_history')
 def order_history():
     # Fetch all orders including the removed ones
-    orders = Order.query.all()  # Get all orders, including removed ones
+    orders = Order.query.all()  
     return render_template('order_history.html', orders=orders)
 
 @app.route('/order_tracking')
@@ -376,4 +398,4 @@ def order_tracking():
     return render_template('order_tracking.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 
