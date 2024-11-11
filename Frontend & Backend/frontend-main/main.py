@@ -98,7 +98,7 @@ def create_tables():
     if not User.query.first():
         default_user = User(
             username="admin",
-            password=bcrypt.generate_password_hash("password").decode('utf-8')
+            password=bcrypt.generate_password_hash("password")
         )
         db.session.add(default_user)
         db.session.commit()
@@ -115,16 +115,12 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        # Validate password length and complexity
-        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'\d', password):
-            flash("Password must be at least 8 characters long and contain a mix of uppercase, lowercase, and numbers.")
-            return redirect(url_for('login'))
-
         # Retrieve the first (and only) user from the database
         user = User.query.first()
 
+        # Check if user exists and if the password and username match
         if user and bcrypt.check_password_hash(user.password, password) and user.username == username:
-            return redirect(url_for('order_form'))  
+            return redirect(url_for('order_form'))
         else:
             flash("Invalid username or password. Please try again.")
             return redirect(url_for('login'))
@@ -356,29 +352,63 @@ def remove_order(order_id):
 
     return jsonify({"success": True})  
 
+# Flask route for updating order
 @app.route('/update_order/<int:orderId>', methods=['POST'])
 def update_order(orderId):
-    data = request.json  
-    order = Order.query.get(orderId)  
+    data = request.json  # Receive the JSON data
+    order = Order.query.get(orderId)  # Get the order by ID
 
-    if order:
-        # Update each field with the received data
-        order.buyer.name = data['customer_name']
-        order.buyer.contact_number = data['contact_number']
-        order.buyer.address = data['address']
-        order.pickup_place = data['pickup_place']
-        order.pickup_date = data['pickup_date']
-        order.delicacy = data['delicacy']
-        order.quantity = data['quantity']
-        order.container_size = data['container']
-        order.special_request = data['special_request']
-        order.status = data['status']
-       
+    if not order:
+        return jsonify(success=False, message="Order not found")
+
+    try:
+        # Update each field with the received data, handling enums and date parsing
+        if 'customer_name' in data:
+            order.buyer.name = data['customer_name']
+        if 'contact_number' in data:
+            order.buyer.contact_number = data['contact_number']
+        if 'address' in data:
+            order.buyer.address = data['address']
+        if 'pickup_place' in data:
+            order.pickup_place = data['pickup_place']
+        if 'pickup_date' in data:
+            order.pickup_date = datetime.strptime(data['pickup_date'], "%Y-%m-%d")
+        
+        # Update delicacy enum
+        if 'delicacy' in data:
+            try:
+                order.delicacy = DelicacyType[data['delicacy'].upper().replace("-", "_")]
+            except KeyError:
+                return jsonify(success=False, message="Invalid delicacy type")
+        
+        # Update container size enum
+        if 'container' in data:
+            try:
+                order.container_size = ContainerSize[data['container'].upper().replace("-", "_")]
+            except KeyError:
+                return jsonify(success=False, message="Invalid container size")
+        
+        # Update quantity and special request
+        if 'quantity' in data:
+            order.quantity = int(data['quantity'])
+        if 'special_request' in data:
+            order.special_request = data['special_request']
+        
+        # Update status enum
+        if 'status' in data:
+            try:
+                order.status = OrderStatus[data['status'].upper().replace(" ", "_")]
+            except KeyError:
+                return jsonify(success=False, message="Invalid order status")
+
         # Commit changes to the database
         db.session.commit()
         return jsonify(success=True, order=data)
-    else:
-        return jsonify(success=False, message="Order not found")
+    except Exception as e:
+        db.session.rollback()  # Rollback on any error
+        print(f"Error updating order: {e}")
+        return jsonify(success=False, message="An error occurred while updating the order")
+
 
 @app.route('/delete_order/<int:order_id>', methods=['DELETE'])
 def delete_order(order_id):
