@@ -66,7 +66,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     buyer_id = Column(Integer, ForeignKey('buyer_info.id'), nullable=False)
     delicacy = Column(Enum(DelicacyType), nullable=False)
-    quantity = Column(Integer, nullable=False)  # Limited to 1-10
+    quantity = Column(Integer, nullable=False)
     container_size = Column(Enum(ContainerSize), nullable=False)
     special_request = Column(String(255))
     pickup_place = Column(String(255), nullable=False)
@@ -75,10 +75,10 @@ class Order(Base):
     user = relationship("User", back_populates="orders")
     buyer = relationship("BuyerInfo", back_populates="orders")
 
-    # Validator for quantity (1-10 only)
+    # Validator for quantity (1 or more)
     @staticmethod
     def validate_quantity(quantity):
-        if 1 <= quantity <= 10:
+        if quantity >= 1:
             return True
         return False
 
