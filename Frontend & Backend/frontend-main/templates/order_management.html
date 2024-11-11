@@ -58,23 +58,26 @@
                    <input type="text" id="input_container_{{ order.id }}" value="{{ order.container_size.value }}" style="display:none;"></td>
                <td><span class="order_field" id="special_request_{{ order.id }}">{{ order.special_request }}</span>
                    <input type="text" id="input_special_request_{{ order.id }}" value="{{ order.special_request }}" style="display:none;"></td>
-               <td><span class="order_field" id="status_{{ order.id }}">{{ order.status }}</span>
-                   <select id="input_status_{{ order.id }}" style="display:none;">
-                       <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
-                       <option value="in-progress" {% if order.status == 'in-progress' %}selected{% endif %}>In-progress</option>
-                       <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
-                   </select></td>
-              
+               <td>
+                   <span class="order_field" id="status_{{ order.id }}">{{ order.status }}</span>
+                   <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}" style="display:none;" id="status_form_{{ order.id }}">
+                       <select id="input_status_{{ order.id }}" name="status">
+                           <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                           <option value="in-progress" {% if order.status == 'in-progress' %}selected{% endif %}>In-progress</option>
+                           <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
+                       </select>
+                       <button type="submit">Save</button>
+                   </form>
+               </td>
 
-                   <td>
+               <td>
                     <div class="button-container">
                         <button id="change_button_{{ order.id }}" onclick="editOrder({{ order.id }})">Change</button>
                         <button id="save_button_{{ order.id }}" onclick="saveOrder({{ order.id }})" style="display:none;">Save</button>
                         <button id="cancel_button_{{ order.id }}" onclick="cancelEdit({{ order.id }})" style="display:none;">Cancel</button>
                         <button id="delete_button_{{ order.id }}" onclick="deleteOrder({{ order.id }})">Delete</button>
                     </div>
-                 </td>
-                 
+               </td>
             </tr>
             {% endfor %}
          </tbody>
