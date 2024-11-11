@@ -1,4 +1,3 @@
-/* Reset styles */
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +6,7 @@
 }
 
 body {
-    background-color: #E0F7FA; /* Lightened Sky Blue background */
+    background-color: #E0F7FA; 
     display: flex;
     align-items: center;
     justify-content: center;
