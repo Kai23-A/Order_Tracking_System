@@ -397,7 +397,7 @@ def update_order(orderId):
         # Update status enum
         if 'status' in data:
             try:
-                order.status = OrderStatus[data['status'].upper().replace(" ", "_")]
+                order.status = OrderStatus[data['status'].replace("OrderStatus.", "").upper().replace(" ", "_")]
             except KeyError:
                 return jsonify(success=False, message="Invalid order status")
 
