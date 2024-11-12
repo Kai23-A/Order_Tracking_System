@@ -48,7 +48,7 @@ class BuyerInfo(Base):
     __tablename__ = 'buyer_info'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
-    contact_number = Column(String(15), nullable=False)  # This will be validated for 11 digits
+    contact_number = Column(String(15), nullable=False)  
     address = Column(String(255), nullable=False)
     orders = relationship("Order", back_populates="buyer")
 
@@ -66,7 +66,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     buyer_id = Column(Integer, ForeignKey('buyer_info.id'), nullable=False)
     delicacy = Column(Enum(DelicacyType), nullable=False)
-    quantity = Column(Integer, nullable=False)  # Limited to 1-10
+    quantity = Column(Integer, nullable=False)  
     container_size = Column(Enum(ContainerSize), nullable=False)
     special_request = Column(String(255))
     pickup_place = Column(String(255), nullable=False)
