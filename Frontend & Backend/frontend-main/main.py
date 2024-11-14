@@ -355,9 +355,9 @@ def remove_order(order_id):
 # Flask route for updating order
 @app.route('/update_order/<int:orderId>', methods=['POST'])
 def update_order(orderId):
-    data = request.json  # Receive the JSON data
-    order = Order.query.get(orderId)  # Get the order by ID
-
+    data = request.json
+    order = Order.query.get(orderId) 
+    
     if not order:
         return jsonify(success=False, message="Order not found")
 
